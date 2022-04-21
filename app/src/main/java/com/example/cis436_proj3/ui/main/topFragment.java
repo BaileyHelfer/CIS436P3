@@ -9,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.example.cis436_proj3.R;
 
 
 public class topFragment extends Fragment {
+    private List<String> breedsList = new ArrayList<String>();
 
     public topFragment() {
         // Required empty public constructor
@@ -33,7 +36,10 @@ public class topFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_top,container,false);
         Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.)
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,breedsList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
         return inflater.inflate(R.layout.fragment_top, container, false);
     }
 }
