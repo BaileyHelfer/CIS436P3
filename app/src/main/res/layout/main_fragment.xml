@@ -44,6 +44,21 @@
                 android:layout_height="wrap_content"
                 android:text="@string/str_tvOrigin"
                 android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tvRare"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rare"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tvLifespan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lifespan"
+                android:textAlignment="center" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
