@@ -1,12 +1,14 @@
 package com.example.cis436_proj3;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.Display;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -47,8 +49,13 @@ public class MainActivity extends AppCompatActivity implements topFragment.spinn
 
     }
     @Override
-    public void onSelect(JSONObject data){
+    public void onSelect(JSONObject data) throws JSONException {
         Log.d("SEND", String.valueOf(data));
+        Fragment main = this.getSupportFragmentManager().findFragmentById(R.id.mainFragmentView);
+
+        MainFragment display = (MainFragment)main;
+        display.showCat(data);
+
     }
     public static class Cat {
         String breed;

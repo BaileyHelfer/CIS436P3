@@ -47,7 +47,7 @@ public class topFragment extends Fragment {
     }
 
     public interface spinnerListener{
-        void onSelect(JSONObject data);
+        void onSelect(JSONObject data) throws JSONException;
     }
 
     @Override
@@ -82,34 +82,12 @@ public class topFragment extends Fragment {
 //        adapter.notifyDataSetChanged();
 //        spinner.setAdapter(adapter);
         binding = FragmentTopBinding.inflate(inflater,container,false);
+        Log.i("SettingAdapter","Atempt");
         setAdapter();
+        Log.i("SettingAdapter","SET");
         return binding.getRoot();
     }
 
-//    @Override
-//    public void onViewCreated(View view, Bundle savedInstanceState){
-//        spinner = (Spinner) view.findViewById(R.id.spinner);
-//        Log.d("temp","THIS HAS BEEN CREATEWD");
-//        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,breedsList);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner.setAdapter(adapter);
-//        Log.d("temp","ADDING BREED LIST");
-//        adapter.addAll(breedsList);
-//        adapter.notifyDataSetChanged();
-//
-//
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                adapterView.setSelection(i);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-//    }
 
 
     @Override
@@ -117,39 +95,45 @@ public class topFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d("OnViewCreated","HERE");
         MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String breed = adapterView.getItemAtPosition(i).toString();
 
-                Log.d("Item Selected",breed);
-                for(int j = 0;j < content.length();j++)
-                {
-                    try {
-                        if(content.getJSONObject(j).get("name").toString() == breed)
-                        {
-                            breedSelect(content.getJSONObject(j));
-                            break;
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
     }
 
     public void setAdapter() {
         requestQueue = Volley.newRequestQueue(this.getContext());
+
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 "https://api.thecatapi.com/v1/breeds?api_key=%22+16928292-a993-4894-8635-9f89a7791578",
                 (JSONArray) null,
                 response -> {
+                    adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item,this.breedsList);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    binding.spinner.setAdapter(adapter);
+                    binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            String breed = adapterView.getItemAtPosition(i).toString();
+
+                            Log.d("Item Selected",breed);
+                            for(int j = 0;j < content.length();j++)
+                            {
+                                try {
+                                    if(content.getJSONObject(j).get("name").toString() == breed)
+                                    {
+                                        breedSelect(content.getJSONObject(j));
+                                        break;
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            Log.d("SettingAdapter","NOTHIGN CLICKED");
+                        }
+                    });
+
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
@@ -171,6 +155,8 @@ public class topFragment extends Fragment {
                         }
 
                     }
+                    adapter.addAll(breedsList);
+                    adapter.notifyDataSetChanged();
                     Log.d("ArrayRequest","FINISHED");
 
 
@@ -183,13 +169,12 @@ public class topFragment extends Fragment {
 
                 });
         requestQueue.add(jsonArrayRequest);
-        adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item,this.breedsList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinner.setAdapter(adapter);
 
+        MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        Log.i("SettingAdapter","FinishedInFunction");
     }
-    public void breedSelect(JSONObject data)
-    {
+    public void breedSelect(JSONObject data) throws JSONException {
         callback.onSelect(data);
     }
 }
