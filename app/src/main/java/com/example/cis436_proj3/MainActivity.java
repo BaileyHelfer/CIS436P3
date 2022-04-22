@@ -1,6 +1,7 @@
 package com.example.cis436_proj3;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cis436_proj3.ui.main.MainFragment;
+import com.example.cis436_proj3.ui.main.topFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,17 +27,18 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private List<String> catNames = new ArrayList<String>();
     private List<Cat> catObj = new ArrayList<Cat>();
-
+    topFragment topFrag;
+    MainFragment mainFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
-                    .commitNow();
-        }
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.container, MainFragment.newInstance())
+//                    .commitNow();
+//        }
         requestQueue = Volley.newRequestQueue(this);
 
         //create object request
@@ -103,6 +106,23 @@ public class MainActivity extends AppCompatActivity {
 
                 });
         requestQueue.add(jsonArrayRequest);
+
+        // Adding fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        mainFrag = (MainFragment) fragmentManager.findFragmentByTag("MAIN_TAG");
+
+        if (mainFrag == null)
+        {
+            mainFrag = new MainFragment();
+            fragmentManager.beginTransaction().add(R.id.mainFragmentView,mainFrag,"MAIN_TAG");
+        }
+
+        topFrag = (topFragment) fragmentManager.findFragmentByTag("TOP_FRAG");
+        if (topFrag == null)
+        {
+            topFrag = new topFragment();
+            fragmentManager.beginTransaction().add(R.id.topFragmentView,topFrag,"TOP_FRAG");
+        }
     }
 
     public static class Cat {

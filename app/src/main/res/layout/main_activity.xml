@@ -8,12 +8,24 @@
     tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
+        android:id="@+id/topFragmentView"
         android:name="com.example.cis436_proj3.ui.main.topFragment"
         android:layout_width="0dp"
         android:layout_height="96dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_top"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainFragmentView"
+        android:name="com.example.cis436_proj3.ui.main.MainFragment"
+        android:layout_width="0dp"
+        android:layout_height="290dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topFragmentView"
+        tools:layout="@layout/main_fragment"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
