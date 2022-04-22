@@ -2,8 +2,10 @@ package com.example.cis436_proj3;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -23,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements topFragment.spinnerListener  {
     private RequestQueue requestQueue;
     private List<String> catNames = new ArrayList<String>();
     private List<Cat> catObj = new ArrayList<Cat>();
@@ -34,97 +36,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.container, MainFragment.newInstance())
-//                    .commitNow();
-//        }
-        requestQueue = Volley.newRequestQueue(this);
-
-        //create object request
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(
-                        Request.Method.GET,    //the request method
-                        "https://api.thecatapi.com/v1/breeds?api_key=%22+16928292-a993-4894-8635-9f89a7791578",  //the URL
-                        null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d("**Approaching response", "Finish?");
-                                Log.d("**JSON response", response.toString());
-                            }
-                        },
-                        new Response.ErrorListener(){
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("**Volley Error", error.toString());
-                            }
-                        }
-                );
-
-
-        //add request to the queue
-        requestQueue.add(jsonObjectRequest);
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
-                "https://api.thecatapi.com/v1/breeds?api_key=%22+16928292-a993-4894-8635-9f89a7791578",
-                (JSONArray) null,
-                response -> {
-
-
-                    for (int i = 0; i < response.length(); i++) {
-                        try {
-                            JSONObject jsonObject = response.getJSONObject(i);
-                            Log.d("@JSonArray", "onResponse: "
-                                    + jsonObject.getString("id") +
-                                    " "+jsonObject.getString("name") +
-                                    " "+jsonObject.getString("temperament") +
-                                    " "+jsonObject.getString("origin") +
-                                    " "+jsonObject.getString("reference_image_id") +
-                                    " "+jsonObject.getInt("rare") +
-                                    " "+jsonObject.getString("life_span"));
-
-                                    catNames.add(jsonObject.getString("name"));
-                                    catObj.add(new Cat(jsonObject.getString("name"),jsonObject.getString("temperament") ,
-                                            jsonObject.getString("reference_image_id"), jsonObject.getString("origin"),
-                                            jsonObject.getString("life_span"), jsonObject.getInt("rare")));
-
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.d("**Test", e.toString());
-                        }
-
-                    }
-
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-
-                });
-        requestQueue.add(jsonArrayRequest);
-
-        // Adding fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        mainFrag = (MainFragment) fragmentManager.findFragmentByTag("MAIN_TAG");
-
-        if (mainFrag == null)
-        {
-            mainFrag = new MainFragment();
-            fragmentManager.beginTransaction().add(R.id.mainFragmentView,mainFrag,"MAIN_TAG");
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.mainFragmentView, MainFragment.newInstance())
+                    .commitNow();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.topFragmentView,topFragment.newInstance())
+                    .commitNow();
         }
 
-        topFrag = (topFragment) fragmentManager.findFragmentByTag("TOP_FRAG");
-        if (topFrag == null)
-        {
-            topFrag = new topFragment();
-            fragmentManager.beginTransaction().add(R.id.topFragmentView,topFrag,"TOP_FRAG");
-        }
     }
-
+    @Override
+    public void onSelect(JSONObject data){
+        Log.d("SEND", String.valueOf(data));
+    }
     public static class Cat {
         String breed;
         String temperament;
