@@ -48,7 +48,7 @@ public class MainFragment extends Fragment {
         String temperament = data.getString("temperament").toString();
         String origin = data.getString("origin").toString();
         String lifespan = data.getString("life_span").toString();
-        int rare = data.getInt("rare");
+        String rare = isCatRare(data.getInt("rare"));
         binding.tvName.setText("Breed: " + name);
         binding.tvOrigin.setText("Origin: "+origin);
         binding.tvTemperament.setText("Temperament: " + temperament);
@@ -73,4 +73,13 @@ public class MainFragment extends Fragment {
 
     }
 
+    String isCatRare(int rare) {
+        if (rare == 0)
+        {
+            return "No";
+        }
+        else {
+            return "Yes";
+        }
+    }
 }
